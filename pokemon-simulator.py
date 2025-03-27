@@ -12,7 +12,7 @@ rare_ids = [6, 9, 65, 94, 149, 248, 254, 282, 448, 472, 475, 212, 230, 359, 373,
 # --- Dropchancen pro Pack ---
 drop_chances = {
     "Charizard": {"Basic": 0.0002, "Premium": 0.00004, "Ultra": 0.00007, "Master": 0.0001},
-    "Rayquaza": {"Basic": 0.00025, "Premium": 0.00005, "Ultra": 0.00008, "Master": 0.00011},
+    "Rayquaza": {"Basic": 0.00025, "Premium": 0.00005, "Ultra": 0.00008, "Master": 0.00012},
     "Mewtwo": {"Basic": 0.0003, "Premium": 0.00006, "Ultra": 0.00009, "Master": 0.00013},
     "Mew": {"Basic": 0.0003, "Premium": 0.00006, "Ultra": 0.00009, "Master": 0.00013},
     "Greninja": {"Basic": 0.001, "Premium": 0.00015, "Ultra": 0.00022, "Master": 0.0003},
