@@ -101,7 +101,6 @@ def reveal_card(index, pack_name):
     if index >= 5:
         return
 
-    # Spezieller Pokémon-Drop
     for special_name, pack_chances in drop_chances.items():
         chance = pack_chances.get(pack_name, 0)
         if random.random() < chance:
@@ -114,7 +113,6 @@ def reveal_card(index, pack_name):
                 root.after(700, lambda: reveal_card(index + 1, pack_name))
             return
 
-    # Regulärer Drop
     roll = random.random()
     rarity = "Common"
     if roll < packs[pack_name]["legendary"]:
@@ -180,6 +178,14 @@ def open_shop():
 
     player.update_highscore()
 
+def reset_game():
+    player.money = 50
+    player.collection.clear()
+    info_label.config(text=f"💰 Guthaben: {player.money} €")
+    for widget in card_frame.winfo_children():
+        widget.destroy()
+    messagebox.showinfo("Reset", "Das Spiel wurde zurückgesetzt!")
+
 # --- Buttons ---
 for pack_name in packs:
     btn = tk.Button(pack_frame, text=f"{pack_name} Pack ({packs[pack_name]['price']} €)",
@@ -187,7 +193,10 @@ for pack_name in packs:
     btn.pack(side="left", padx=10)
 
 shop_btn = tk.Button(root, text="🛒 Karten im Shop verkaufen", command=open_shop, bg="lightgreen")
-shop_btn.pack(pady=20)
+shop_btn.pack(pady=5)
+
+reset_btn = tk.Button(root, text="🔄 Reset", command=reset_game, bg="lightcoral")
+reset_btn.pack(pady=5)
 
 # --- Start ---
 root.mainloop()
