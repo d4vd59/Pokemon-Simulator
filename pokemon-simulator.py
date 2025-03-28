@@ -13,18 +13,33 @@ rare_ids = [6, 9, 65, 94, 149, 248, 254, 282, 448, 472, 475, 212, 230, 359, 373,
 # --- Dropchancen pro Pack ---
 drop_chances = {
     "Charizard": {"Basic": 0.0002, "Premium": 0.00004, "Ultra": 0.00007, "Master": 0.0001},
-    "Rayquaza": {"Basic": 0.00025, "Premium": 0.00005, "Ultra": 0.00008, "Master": 0.00012},
+    "Rayquaza": {"Basic": 0.00025, "Premium": 0.00005, "Ultra": 0.00008, "Master": 0.00011},
     "Mewtwo": {"Basic": 0.0003, "Premium": 0.00006, "Ultra": 0.00009, "Master": 0.00013},
+    "Mew": {"Basic": 0.0003, "Premium": 0.00006, "Ultra": 0.00009, "Master": 0.00013},
+    "Greninja": {"Basic": 0.001, "Premium": 0.00015, "Ultra": 0.00022, "Master": 0.0003},
+    "Tyranitar": {"Basic": 0.0012, "Premium": 0.00018, "Ultra": 0.00026, "Master": 0.00035},
+    "Dragonite": {"Basic": 0.0014, "Premium": 0.0002, "Ultra": 0.00028, "Master": 0.00038},
+    "Umbreon": {"Basic": 0.0015, "Premium": 0.00022, "Ultra": 0.0003, "Master": 0.0004},
+    "Salamence": {"Basic": 0.0016, "Premium": 0.00023, "Ultra": 0.00031, "Master": 0.00041},
+    "Metagross": {"Basic": 0.0017, "Premium": 0.00025, "Ultra": 0.00034, "Master": 0.00045},
+    "Lucario": {"Basic": 0.0008, "Premium": 0.00012, "Ultra": 0.00017, "Master": 0.00024},
+    "Snorlax": {"Basic": 0.0018, "Premium": 0.00027, "Ultra": 0.00037, "Master": 0.00048},
+    "Sylveon": {"Basic": 0.002, "Premium": 0.0003, "Ultra": 0.00042, "Master": 0.00055},
+    "Espeon": {"Basic": 0.002, "Premium": 0.0003, "Ultra": 0.00042, "Master": 0.00055},
+    "Gengar": {"Basic": 0.0022, "Premium": 0.00033, "Ultra": 0.00045, "Master": 0.0006},
+    "Gardevoir": {"Basic": 0.002, "Premium": 0.0003, "Ultra": 0.00042, "Master": 0.00055},
+    "Pikachu": {"Basic": 0.003, "Premium": 0.00045, "Ultra": 0.0006, "Master": 0.00075},
+    "Eevee": {"Basic": 0.004, "Premium": 0.0006, "Ultra": 0.00085, "Master": 0.001}
 }
 
 # --- Werte ---
-value_overrides = {
-    "Charizard": 80, "Rayquaza": 75, "Mewtwo": 60
-}
+value_overrides = {name: value for name, value in zip(drop_chances.keys(),
+    [80, 75, 60, 55, 50, 45, 42, 40, 40, 38, 35, 32, 30, 30, 30, 28, 25, 20])}
 
 # --- Farben ---
 color_overrides = {
-    "Charizard": "red", "Rayquaza": "green", "Mewtwo": "violet"
+    "Charizard": "red", "Mew": "pink", "Rayquaza": "green",
+    "Umbreon": "purple", "Greninja": "blue", "Mewtwo": "violet", "Pikachu": "orange"
 }
 
 # --- Packs ---
