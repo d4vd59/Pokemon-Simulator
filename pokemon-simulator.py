@@ -7,8 +7,8 @@ from io import BytesIO
 import os
 
 # --- Pokemon-Kategorien ---
-legendary_ids = [144, 145, 146, 150, 151, 249, 250, 382, 383, 384, 385, 386, 487, 488, 491, 493, 494, 643, 644, 646, 9, 6, 25]  # Blastoise (9) hinzugefügt
-rare_ids = [65, 94, 149, 248, 254, 282, 448, 472, 475, 212, 230, 359, 373, 445, 461, 534, 553, 635]
+legendary_ids = [144, 145, 146, 150, 151, 249, 250, 382, 383, 384, 385, 386, 487, 488, 491, 493, 494, 643, 644, 646, 9, 6, 25, 3, 26, 24, 34, 65, 130, 149] 
+rare_ids = [65, 94, 248, 254, 282, 448, 472, 475, 212, 230, 359, 373, 445, 461, 534, 553, 635, 2, 5, 8, 68, 59, 38, 54, 55, 64, 95, 107, 197, 143, 148]
 
 # --- Dropchancen pro Pack (nach Master-Rate sortiert: seltenste zuerst) ---
 drop_chances = {
@@ -21,6 +21,8 @@ drop_chances = {
     "Greninja": {"Basic": 0.00001, "Premium": 0.000015, "Ultra": 0.000022, "Master": 0.0003},
     "Lucario": {"Basic": 0.000008, "Premium": 0.000012, "Ultra": 0.000027, "Master": 0.00034},
     "Tyranitar": {"Basic": 0.000012, "Premium": 0.000018, "Ultra": 0.000026, "Master": 0.00035},
+    "Raichu": {"Basic": 0.000012, "Premium": 0.000018, "Ultra": 0.000026, "Master": 0.00035},
+    "Arbok": {"Basic": 0.000015, "Premium": 0.00022, "Ultra": 0.00003, "Master": 0.0004},
     "Dragonite": {"Basic": 0.000014, "Premium": 0.00002, "Ultra": 0.000028, "Master": 0.00038},
     "Umbreon": {"Basic": 0.000015, "Premium": 0.00022, "Ultra": 0.00003, "Master": 0.0004},
     "Salamence": {"Basic": 0.000016, "Premium": 0.00023, "Ultra": 0.000031, "Master": 0.00041},
@@ -30,7 +32,9 @@ drop_chances = {
     "Espeon": {"Basic": 0.00002, "Premium": 0.00003, "Ultra": 0.000042, "Master": 0.00055},
     "Gardevoir": {"Basic": 0.00002, "Premium": 0.00003, "Ultra": 0.000042, "Master": 0.00055},
     "Gengar": {"Basic": 0.000022, "Premium": 0.000033, "Ultra": 0.000045, "Master": 0.0006},
+    "Charmeleon": {"Basic": 0.000022, "Premium": 0.000033, "Ultra": 0.000045, "Master": 0.0006},
     "Eevee": {"Basic": 0.00004, "Premium": 0.00005, "Ultra": 0.00006, "Master": 0.00085}
+    
 }
 
 # --- Werte ---
@@ -38,6 +42,8 @@ value_overrides = {
     "Charizard": 100,
     "Rayquaza": 75,
     "Mewtwo": 60,
+    "Raichu": 50,
+    "Arbok": 40,
     "Mew": 55,
     "Greninja": 50,
     "Tyranitar": 45,
@@ -45,14 +51,16 @@ value_overrides = {
     "Umbreon": 40,
     "Salamence": 40,
     "Metagross": 38,
-    "Lucario": 35,
+    "Lucario": 20,
     "Snorlax": 32,
     "Sylveon": 30,
     "Espeon": 30,
+    "Charmeleon": 40,
     "Gengar": 30,
     "Gardevoir": 28,
     "Pikachu": 80,
     "Eevee": 20,
+    "Squirtle": 15,
     "Blastoise": 80  
 }
 
@@ -71,10 +79,10 @@ color_overrides = {
 
 # --- Packs ---
 packs = {
-    "Basic": {"price": 10, "legendary": 0.0025, "rare": 0.01},
-    "Premium": {"price": 20, "legendary": 0.0050, "rare": 0.18},
-    "Ultra": {"price": 35, "legendary": 0.0075, "rare": 0.26},
-    "Master": {"price": 50, "legendary": 0.01, "rare": 0.3}
+    "Basic": {"price": 10, "legendary": 0.025, "rare": 0.5},
+    "Premium": {"price": 20, "legendary": 0.075, "rare": 0.1},
+    "Ultra": {"price": 35, "legendary": 0.01, "rare": 0.2},
+    "Master": {"price": 50, "legendary": 0.125, "rare": 0.3}
 }
 
 # --- Highscore-Datei ---
@@ -143,6 +151,7 @@ def reveal_card(index, pack_name):
     if index >= 5:
         return
 
+    # Randomly select a Pokémon based on drop chances
     for special_name, pack_chances in drop_chances.items():
         chance = pack_chances.get(pack_name, 0)
         if random.random() < chance:
@@ -150,13 +159,21 @@ def reveal_card(index, pack_name):
             if data:
                 name = data["name"].title()
                 img_url = data["sprites"]["front_default"]
-                rarity = "🌟 Legendary" if data["id"] in legendary_ids else "✨ Rare"
+                # Check if Pokémon is legendary or rare
+                if data["id"] in legendary_ids:
+                    rarity = "🌟 Legendary"
+                elif data["id"] in rare_ids:
+                    rarity = "✨ Rare"
+                else:
+                    rarity = "Common"
                 show_card(name, rarity, img_url)
                 root.after(700, lambda: reveal_card(index + 1, pack_name))
             return
 
+    # Roll for a random Pokémon based on the pack's probabilities
     roll = random.random()
     rarity = "Common"
+    
     if roll < packs[pack_name]["legendary"]:
         poke_id = random.choice(legendary_ids)
         rarity = "🌟 Legendary"
@@ -166,17 +183,32 @@ def reveal_card(index, pack_name):
     else:
         poke_id = random.randint(1, 898)
 
+    # Dynamically check if Pokémon is in rare or legendary list
     data = fetch_pokemon_data(poke_id)
     if data:
         name = data["name"].title()
         img_url = data["sprites"]["front_default"]
+        if data["id"] in legendary_ids:
+            rarity = "🌟 Legendary"
+        elif data["id"] in rare_ids:
+            rarity = "✨ Rare"
         show_card(name, rarity, img_url)
 
     root.after(700, lambda: reveal_card(index + 1, pack_name))
 
+
+
 def show_card(name, rarity, img_url):
     img = get_pokemon_image(img_url)
     price = get_price(name, rarity)
+
+    # Define the default text color for legendary and rare Pokémon
+    if rarity == "🌟 Legendary":
+        fg_color = "gold"
+    elif rarity == "✨ Rare":
+        fg_color = "blueviolet"  # blueish purple
+    else:
+        fg_color = color_overrides.get(name, "black")  # Custom colors for specific Pokémon
 
     frame = tk.Frame(card_frame)
     frame.pack(side="left", padx=10)
@@ -185,12 +217,12 @@ def show_card(name, rarity, img_url):
     img_label.image = img
     img_label.pack()
 
-    fg_color = color_overrides.get(name, "black")
     text = f"{name}\n{rarity}\n💵 {price} €"
     label = tk.Label(frame, text=text, font=("Arial", 10), fg=fg_color)
     label.pack()
 
     player.collection.append((name, rarity, price))
+
 
 def open_pack(pack_name):
     pack = packs[pack_name]
