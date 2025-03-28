@@ -77,13 +77,12 @@ color_overrides = {
     "Blastoise": "teal" 
 }
 
-
 # --- Packs ---
 packs = {
-    "Basic": {"price": 10, "legendary": 0.025, "rare": 0.05},
-    "Premium": {"price": 20, "legendary": 0.075, "rare": 0.1},
-    "Ultra": {"price": 35, "legendary": 0.01, "rare": 0.2},
-    "Master": {"price": 50, "legendary": 0.125, "rare": 0.3}
+    "Basic": {"price": 10, "legendary": 0.025, "rare": 0.0075},
+    "Premium": {"price": 20, "legendary": 0.033, "rare": 0.01},
+    "Ultra": {"price": 35, "legendary": 0.05, "rare": 0.15},
+    "Master": {"price": 50, "legendary": 0.833, "rare": 0.25}
 }
 
 # --- Highscore-Datei ---
@@ -141,9 +140,17 @@ def fetch_pokemon_data(poke_id_or_name):
     return response.json()
 
 def get_pokemon_image(url):
-    img_data = requests.get(url).content
-    img = Image.open(BytesIO(img_data)).resize((96, 96))
-    return ImageTk.PhotoImage(img)
+    try:
+        img_data = requests.get(url).content
+        img = Image.open(BytesIO(img_data))  # Try opening the image
+        img = img.resize((96, 96))  # Resize the image
+        return ImageTk.PhotoImage(img)
+    except Exception as e:
+        print(f"Error fetching or processing image from {url}: {e}")
+        # Return a placeholder image or a blank image if the actual image can't be loaded
+        placeholder = Image.new('RGB', (96, 96), color='gray')  # Placeholder image
+        return ImageTk.PhotoImage(placeholder)  # Return the placeholder image
+
 
 def get_price(name, rarity):
     return value_overrides.get(name, 30 if rarity == "🌟 Legendary" else 10 if rarity == "✨ Rare" else 1)
@@ -196,7 +203,6 @@ def reveal_card(index, pack_name):
         show_card(name, rarity, img_url)
 
     root.after(700, lambda: reveal_card(index + 1, pack_name))
-
 
 
 def show_card(name, rarity, img_url):
