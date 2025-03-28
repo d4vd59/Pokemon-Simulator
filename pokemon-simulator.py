@@ -1,17 +1,18 @@
-import tkinter as tk
-from tkinter import messagebox
-from PIL import Image, ImageTk
-import random
-import requests
-from io import BytesIO
-import os
+import tkinter as tk  # Importiere das tkinter-Modul für die GUI-Erstellung
+from tkinter import messagebox  # Importiere messagebox für Popup-Nachrichten
+from PIL import Image, ImageTk  # Importiere PIL für Bildbearbeitung (Image und ImageTk für GUI)
+import random  # Modul für Zufallszahlen
+import requests  # Modul zum Senden von HTTP-Anfragen (für die PokéAPI)
+from io import BytesIO  # Ermöglicht das Laden von Bilddaten aus Bytes
+import os  # Modul zum Arbeiten mit dem Dateisystem
 
 # --- Pokemon-Kategorien ---
-legendary_ids = [144, 145, 146, 150, 151, 249, 250, 382, 383, 384, 385, 386, 487, 488, 491, 493, 494, 643, 644, 646, 9, 6, 25, 3, 26, 24, 34, 65, 130, 149] 
-rare_ids = [65, 94, 248, 254, 282, 448, 472, 475, 212, 230, 359, 373, 445, 461, 534, 553, 635, 2, 5, 8, 68, 59, 38, 54, 55, 64, 95, 107, 197, 143, 148]
+legendary_ids = [144, 145, 146, 150, 151, 249, 250, 382, 383, 384, 385, 386, 487, 488, 491, 493, 494, 643, 644, 646, 9, 6, 25, 3, 26, 24, 34, 65, 130, 149]  # IDs legendärer Pokémon
+rare_ids = [65, 94, 248, 254, 282, 448, 472, 475, 212, 230, 359, 373, 445, 461, 534, 553, 635, 2, 5, 8, 68, 59, 38, 54, 55, 64, 95, 107, 197, 143, 148]  # IDs seltener Pokémon
 
 # --- Dropchancen pro Pack (nach Master-Rate sortiert: seltenste zuerst) ---
 drop_chances = {
+    # Dropchancen für bestimmte Pokémon je nach Packtyp
     "Mewtwo": {"Basic": 0.000003, "Premium": 0.000006, "Ultra": 0.00009, "Master": 0.00013},
     "Mew": {"Basic": 0.000003, "Premium": 0.000006, "Ultra": 0.00009, "Master": 0.00013},
     "Rayquaza": {"Basic": 0.000025, "Premium": 0.000005, "Ultra": 0.00008, "Master": 0.00011},
@@ -35,11 +36,11 @@ drop_chances = {
     "Gengar": {"Basic": 0.000022, "Premium": 0.000033, "Ultra": 0.000045, "Master": 0.0006},
     "Charmeleon": {"Basic": 0.000022, "Premium": 0.000033, "Ultra": 0.000045, "Master": 0.0006},
     "Eevee": {"Basic": 0.00004, "Premium": 0.00005, "Ultra": 0.00006, "Master": 0.00085}
-    
 }
 
 # --- Werte ---
 value_overrides = {
+    # Feste Werte in Euro für bestimmte Pokémon
     "Charizard": 100,
     "Rayquaza": 75,
     "Mewtwo": 60,
@@ -67,6 +68,7 @@ value_overrides = {
 
 # --- Farben ---
 color_overrides = {
+    # Farben zur Darstellung bestimmter Pokémon im UI
     "Charizard": "red",
     "Mew": "pink",
     "Rayquaza": "green",
@@ -79,77 +81,81 @@ color_overrides = {
 
 # --- Packs ---
 packs = {
+    # Preis und Wahrscheinlichkeiten für legendäre/spezielle Pokémon je Pack
     "Basic": {"price": 10, "legendary": 0.025, "rare": 0.0075},
     "Premium": {"price": 20, "legendary": 0.033, "rare": 0.01},
     "Ultra": {"price": 35, "legendary": 0.05, "rare": 0.15},
-    "Master": {"price": 50, "legendary": 0.833, "rare": 0.25}
+    "Master": {"price": 50, "legendary": 0.0833, "rare": 0.25}
 }
 
 # --- Highscore-Datei ---
-HIGHSCORE_FILE = "highscore.txt"
+HIGHSCORE_FILE = "highscore.txt"  # Name der Datei zum Speichern des Highscores
 
 # --- Highscore laden ---
 def load_highscore():
-    if os.path.exists(HIGHSCORE_FILE):
-        with open(HIGHSCORE_FILE, "r") as file:
-            return int(file.read().strip())
-    return 0
+    if os.path.exists(HIGHSCORE_FILE):  # Falls Datei existiert
+        with open(HIGHSCORE_FILE, "r") as file:  # Datei öffnen
+            return int(file.read().strip())  # Inhalt lesen und in Integer umwandeln
+    return 0  # Wenn Datei nicht existiert, Highscore = 0
 
+# Highscore speichern
 def save_highscore():
-    with open(HIGHSCORE_FILE, "w") as file:
-        file.write(str(player.highscore))
+    with open(HIGHSCORE_FILE, "w") as file:  # Datei zum Schreiben öffnen
+        file.write(str(player.highscore))  # Aktuellen Highscore reinschreiben
 
 # --- Spielerklasse ---
 class Player:
     def __init__(self):
-        self.money = 50
-        self.collection = []
-        self.highscore = load_highscore()
+        self.money = 50  # Startgeld
+        self.collection = []  # Gesammelte Pokémon
+        self.highscore = load_highscore()  # Highscore laden
 
     def update_highscore(self):
-        if self.money > self.highscore:
-            self.highscore = self.money
-            save_highscore()
-            highscore_label.config(text=f"🏆 Highscore: {self.highscore} €")
+        if self.money > self.highscore:  # Wenn aktuelles Geld > Highscore
+            self.highscore = self.money  # Neuen Highscore setzen
+            save_highscore()  # Highscore speichern
+            highscore_label.config(text=f"🏆 Highscore: {self.highscore} €")  # Label aktualisieren
 
-player = Player()
+player = Player()  # Spieler-Instanz erstellen
 
 # --- GUI Setup ---
-root = tk.Tk()
-root.title("Pokémon Pack Simulator")
-root.geometry("950x700")
+root = tk.Tk()  # Hauptfenster erstellen
+root.title("Pokémon Pack Simulator")  # Fenstertitel setzen
+root.geometry("950x700")  # Fenstergröße setzen
 
-pack_frame = tk.Frame(root)
-pack_frame.pack(pady=10)
+pack_frame = tk.Frame(root)  # Frame für Pack-Buttons
+pack_frame.pack(pady=10)  # Abstand oben/unten
 
-card_frame = tk.Frame(root) # Enes 2444 // Marco 1008
-card_frame.pack(pady=10)
+card_frame = tk.Frame(root)  # Frame für Kartenanzeige
+card_frame.pack(pady=10)  # Abstand
 
-info_label = tk.Label(root, text=f"💰 Guthaben: {player.money} €", font=("Arial", 14))
-info_label.pack(pady=5)
+info_label = tk.Label(root, text=f"💰 Guthaben: {player.money} €", font=("Arial", 14))  # Label für Geld
+info_label.pack(pady=5)  # Abstand
 
-highscore_label = tk.Label(root, text=f"🏆 Highscore: {player.highscore} €", font=("Arial", 14), fg="blue")
-highscore_label.pack(pady=5)
+highscore_label = tk.Label(root, text=f"🏆 Highscore: {player.highscore} €", font=("Arial", 14), fg="blue")  # Label für Highscore
+highscore_label.pack(pady=5)  # Abstand
 
 # --- Hilfsfunktionen ---
 def fetch_pokemon_data(poke_id_or_name):
-    url = f"https://pokeapi.co/api/v2/pokemon/{poke_id_or_name}"
-    response = requests.get(url)
-    if response.status_code != 200:
+    # Holt Daten von der PokéAPI für ein Pokémon (nach ID oder Name)
+    url = f"https://pokeapi.co/api/v2/pokemon/{poke_id_or_name}"  # API-URL
+    response = requests.get(url)  # HTTP-Request senden
+    if response.status_code != 200:  # Wenn Fehler beim Abrufen
         return None
-    return response.json()
+    return response.json()  # JSON-Antwort zurückgeben
+
 
 def get_pokemon_image(url):
     try:
         img_data = requests.get(url).content
-        img = Image.open(BytesIO(img_data))  # Try opening the image
-        img = img.resize((96, 96))  # Resize the image
+        img = Image.open(BytesIO(img_data))  
+        img = img.resize((96, 96))  
         return ImageTk.PhotoImage(img)
     except Exception as e:
         print(f"Error fetching or processing image from {url}: {e}")
-        # Return a placeholder image or a blank image if the actual image can't be loaded
-        placeholder = Image.new('RGB', (96, 96), color='gray')  # Placeholder image
-        return ImageTk.PhotoImage(placeholder)  # Return the placeholder image
+        
+        placeholder = Image.new('RGB', (96, 96), color='gray')  
+        return ImageTk.PhotoImage(placeholder) 
 
 
 def get_price(name, rarity):
@@ -159,7 +165,7 @@ def reveal_card(index, pack_name):
     if index >= 5:
         return
 
-    # Randomly select a Pokémon based on drop chances
+   
     for special_name, pack_chances in drop_chances.items():
         chance = pack_chances.get(pack_name, 0)
         if random.random() < chance:
@@ -167,7 +173,7 @@ def reveal_card(index, pack_name):
             if data:
                 name = data["name"].title()
                 img_url = data["sprites"]["front_default"]
-                # Check if Pokémon is legendary or rare
+                
                 if data["id"] in legendary_ids:
                     rarity = "🌟 Legendary"
                 elif data["id"] in rare_ids:
@@ -178,7 +184,7 @@ def reveal_card(index, pack_name):
                 root.after(700, lambda: reveal_card(index + 1, pack_name))
             return
 
-    # Roll for a random Pokémon based on the pack's probabilities
+    
     roll = random.random()
     rarity = "Common"
     
@@ -191,7 +197,7 @@ def reveal_card(index, pack_name):
     else:
         poke_id = random.randint(1, 898)
 
-    # Dynamically check if Pokémon is in rare or legendary list
+    
     data = fetch_pokemon_data(poke_id)
     if data:
         name = data["name"].title()
@@ -209,13 +215,13 @@ def show_card(name, rarity, img_url):
     img = get_pokemon_image(img_url)
     price = get_price(name, rarity)
 
-    # Define the default text color for legendary and rare Pokémon
+   
     if rarity == "🌟 Legendary":
         fg_color = "gold"
     elif rarity == "✨ Rare":
-        fg_color = "blueviolet"  # blueish purple
+        fg_color = "blueviolet" 
     else:
-        fg_color = color_overrides.get(name, "black")  # Custom colors for specific Pokémon
+        fg_color = color_overrides.get(name, "black")  
 
     frame = tk.Frame(card_frame)
     frame.pack(side="left", padx=10)
