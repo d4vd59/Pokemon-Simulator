@@ -17,8 +17,9 @@ drop_chances = {
     "Rayquaza": {"Basic": 0.000025, "Premium": 0.000005, "Ultra": 0.00008, "Master": 0.00011},
     "Blastoise": {"Basic": 0.00002, "Premium": 0.000004, "Ultra": 0.00007, "Master": 0.0001},
     "Charizard": {"Basic": 0.00002, "Premium": 0.000004, "Ultra": 0.00007, "Master": 0.0001},
-    "Pikachu": {"Basic": 0.000015, "Premium": 0.000003, "Ultra": 0.000005, "Master": 0.0001},
+    "Pikachu": {"Basic": 0.000015, "Premium": 0.000003, "Ultra": 0.00005, "Master": 0.0001},
     "Greninja": {"Basic": 0.00001, "Premium": 0.000015, "Ultra": 0.000022, "Master": 0.0003},
+    "Ho-Oh": {"Basic": 0.00001, "Premium": 0.000015, "Ultra": 0.000022, "Master": 0.0003},
     "Lucario": {"Basic": 0.000008, "Premium": 0.000012, "Ultra": 0.000027, "Master": 0.00034},
     "Tyranitar": {"Basic": 0.000012, "Premium": 0.000018, "Ultra": 0.000026, "Master": 0.00035},
     "Raichu": {"Basic": 0.000012, "Premium": 0.000018, "Ultra": 0.000026, "Master": 0.00035},
@@ -79,7 +80,7 @@ color_overrides = {
 
 # --- Packs ---
 packs = {
-    "Basic": {"price": 10, "legendary": 0.025, "rare": 0.5},
+    "Basic": {"price": 10, "legendary": 0.025, "rare": 0.05},
     "Premium": {"price": 20, "legendary": 0.075, "rare": 0.1},
     "Ultra": {"price": 35, "legendary": 0.01, "rare": 0.2},
     "Master": {"price": 50, "legendary": 0.125, "rare": 0.3}
@@ -122,7 +123,7 @@ root.geometry("950x700")
 pack_frame = tk.Frame(root)
 pack_frame.pack(pady=10)
 
-card_frame = tk.Frame(root)
+card_frame = tk.Frame(root) # Enes 2444 // Marco 1008
 card_frame.pack(pady=10)
 
 info_label = tk.Label(root, text=f"💰 Guthaben: {player.money} €", font=("Arial", 14))
