@@ -7,30 +7,30 @@ from io import BytesIO
 import os
 
 # --- Pokemon-Kategorien ---
-legendary_ids = [144, 145, 146, 150, 151, 249, 250, 382, 383, 384, 385, 386, 487, 488, 491, 493, 494, 643, 644, 646, 9]  # Blastoise (9) hinzugefügt
-rare_ids = [6, 65, 94, 149, 248, 254, 282, 448, 472, 475, 212, 230, 359, 373, 445, 461, 534, 553, 635]
+legendary_ids = [144, 145, 146, 150, 151, 249, 250, 382, 383, 384, 385, 386, 487, 488, 491, 493, 494, 643, 644, 646, 9, 6, 25]  # Blastoise (9) hinzugefügt
+rare_ids = [65, 94, 149, 248, 254, 282, 448, 472, 475, 212, 230, 359, 373, 445, 461, 534, 553, 635]
 
 # --- Dropchancen pro Pack (nach Master-Rate sortiert: seltenste zuerst) ---
 drop_chances = {
-    "Mewtwo": {"Basic": 0.00003, "Premium": 0.00006, "Ultra": 0.00009, "Master": 0.0013},
-    "Mew": {"Basic": 0.00003, "Premium": 0.00006, "Ultra": 0.00009, "Master": 0.0013},
-    "Rayquaza": {"Basic": 0.00025, "Premium": 0.00005, "Ultra": 0.00008, "Master": 0.0011},
-    "Blastoise": {"Basic": 0.0002, "Premium": 0.00004, "Ultra": 0.00007, "Master": 0.001},
-    "Charizard": {"Basic": 0.0002, "Premium": 0.0004, "Ultra": 0.0007, "Master": 0.001},
-    "Pikachu": {"Basic": 0.00015, "Premium": 0.00003, "Ultra": 0.00005, "Master": 0.001},
-    "Greninja": {"Basic": 0.0001, "Premium": 0.00015, "Ultra": 0.00022, "Master": 0.003},
-    "Lucario": {"Basic": 0.00008, "Premium": 0.00012, "Ultra": 0.00027, "Master": 0.0034},
-    "Tyranitar": {"Basic": 0.00012, "Premium": 0.00018, "Ultra": 0.00026, "Master": 0.0035},
-    "Dragonite": {"Basic": 0.00014, "Premium": 0.0002, "Ultra": 0.00028, "Master": 0.0038},
-    "Umbreon": {"Basic": 0.00015, "Premium": 0.00022, "Ultra": 0.0003, "Master": 0.004},
-    "Salamence": {"Basic": 0.00016, "Premium": 0.00023, "Ultra": 0.00031, "Master": 0.0041},
-    "Metagross": {"Basic": 0.00017, "Premium": 0.00025, "Ultra": 0.00034, "Master": 0.0045},
-    "Snorlax": {"Basic": 0.00018, "Premium": 0.00027, "Ultra": 0.00037, "Master": 0.0048},
-    "Sylveon": {"Basic": 0.0002, "Premium": 0.0003, "Ultra": 0.00042, "Master": 0.0055},
-    "Espeon": {"Basic": 0.0002, "Premium": 0.0003, "Ultra": 0.00042, "Master": 0.0055},
-    "Gardevoir": {"Basic": 0.0002, "Premium": 0.0003, "Ultra": 0.00042, "Master": 0.0055},
-    "Gengar": {"Basic": 0.00022, "Premium": 0.00033, "Ultra": 0.00045, "Master": 0.006},
-    "Eevee": {"Basic": 0.0004, "Premium": 0.0005, "Ultra": 0.0006, "Master": 0.0085}
+    "Mewtwo": {"Basic": 0.000003, "Premium": 0.000006, "Ultra": 0.00009, "Master": 0.00013},
+    "Mew": {"Basic": 0.000003, "Premium": 0.000006, "Ultra": 0.00009, "Master": 0.00013},
+    "Rayquaza": {"Basic": 0.000025, "Premium": 0.000005, "Ultra": 0.00008, "Master": 0.00011},
+    "Blastoise": {"Basic": 0.00002, "Premium": 0.000004, "Ultra": 0.00007, "Master": 0.0001},
+    "Charizard": {"Basic": 0.00002, "Premium": 0.000004, "Ultra": 0.00007, "Master": 0.0001},
+    "Pikachu": {"Basic": 0.000015, "Premium": 0.000003, "Ultra": 0.000005, "Master": 0.0001},
+    "Greninja": {"Basic": 0.00001, "Premium": 0.000015, "Ultra": 0.000022, "Master": 0.0003},
+    "Lucario": {"Basic": 0.000008, "Premium": 0.000012, "Ultra": 0.000027, "Master": 0.00034},
+    "Tyranitar": {"Basic": 0.000012, "Premium": 0.000018, "Ultra": 0.000026, "Master": 0.00035},
+    "Dragonite": {"Basic": 0.000014, "Premium": 0.00002, "Ultra": 0.000028, "Master": 0.00038},
+    "Umbreon": {"Basic": 0.000015, "Premium": 0.00022, "Ultra": 0.00003, "Master": 0.0004},
+    "Salamence": {"Basic": 0.000016, "Premium": 0.00023, "Ultra": 0.000031, "Master": 0.00041},
+    "Metagross": {"Basic": 0.000017, "Premium": 0.00025, "Ultra": 0.000034, "Master": 0.00045},
+    "Snorlax": {"Basic": 0.000018, "Premium": 0.000027, "Ultra": 0.000037, "Master": 0.00048},
+    "Sylveon": {"Basic": 0.00002, "Premium": 0.00003, "Ultra": 0.000042, "Master": 0.00055},
+    "Espeon": {"Basic": 0.00002, "Premium": 0.00003, "Ultra": 0.000042, "Master": 0.00055},
+    "Gardevoir": {"Basic": 0.00002, "Premium": 0.00003, "Ultra": 0.000042, "Master": 0.00055},
+    "Gengar": {"Basic": 0.000022, "Premium": 0.000033, "Ultra": 0.000045, "Master": 0.0006},
+    "Eevee": {"Basic": 0.00004, "Premium": 0.00005, "Ultra": 0.00006, "Master": 0.00085}
 }
 
 # --- Werte ---
@@ -71,10 +71,10 @@ color_overrides = {
 
 # --- Packs ---
 packs = {
-    "Basic": {"price": 10, "legendary": 0.0025, "rare": 0.05},
-    "Premium": {"price": 20, "legendary": 0.0057, "rare": 0.15},
-    "Ultra": {"price": 35, "legendary": 0.0085, "rare": 0.3},
-    "Master": {"price": 50, "legendary": 0.010, "rare": 0.4}
+    "Basic": {"price": 10, "legendary": 0.0025, "rare": 0.01},
+    "Premium": {"price": 20, "legendary": 0.0050, "rare": 0.18},
+    "Ultra": {"price": 35, "legendary": 0.0075, "rare": 0.26},
+    "Master": {"price": 50, "legendary": 0.01, "rare": 0.3}
 }
 
 # --- Highscore-Datei ---
